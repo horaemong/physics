@@ -1,9 +1,11 @@
 
 from cmath import sqrt
+import imp
 from itertools import cycle
 from msilib.schema import Font
 import pygame
 import math
+import numpy as np
 
 from pyparsing import White
 pygame.init()
@@ -29,6 +31,7 @@ class Planet:
 
 	def __init__(self, x, y, radius, color, mass, ):
 		self.x = x
+		self.ox = x
 		self.y = y
 		self.radius = radius
 		self.color = color
@@ -62,7 +65,7 @@ class Planet:
 		if not self.sun:
 			distance_text = FONT.render(f"{round(self.distance_to_sun/1000, 1)}km", 1, WHITE)
 			win.blit(distance_text, (x - distance_text.get_width()/2, y - distance_text.get_height()/2))
-			kepler_text = FONT.render("T : " + str(self.cycle/self.TIMESTEP) + ", K : " +str(self.k), 1, WHITE)
+			kepler_text = FONT.render("T : " + str(np.around(self.cycle/(self.TIMESTEP*365), 2)) + ", K : " +str(self.k),1, WHITE)
 			win.blit(kepler_text, (x - distance_text.get_width()/2, y + 30 - distance_text.get_height()/2))
 
 	def attraction(self, other):
@@ -109,7 +112,7 @@ class Planet:
 		self.x += self.x_vel * self.TIMESTEP
 		self.y += self.y_vel * self.TIMESTEP
 		self.orbit.append((self.x, self.y))
-		self.k = self.cycle**2/self.AU**3
+		self.k = (self.cycle/self.TIMESTEP*365)**2/self.x**3
 
 
 def main():
